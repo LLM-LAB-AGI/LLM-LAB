@@ -1,2 +1,2 @@
 # LLM-LAB
-LLM-LAB AI, LLM, ML, DL.
+Machine Learnin, LLM Laboratory.
