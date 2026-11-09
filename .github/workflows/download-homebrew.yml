@@ -1,0 +1,42 @@
+
+name: Download Homebrew API File
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download original JWS file
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          URL="https://formulae.brew.sh/api/internal/packages.arm64_golden_gate.jws.json"
+          FILE="packages.arm64_golden_gate.jws.json"
+
+          curl -fL \
+            --retry 5 \
+            --retry-delay 3 \
+            --connect-timeout 20 \
+            --max-time 300 \
+            -o "$FILE" \
+            "$URL"
+
+          test -s "$FILE"
+
+          echo "File size:"
+          wc -c "$FILE"
+
+          echo "SHA-256:"
+          sha256sum "$FILE"
+
+      - name: Upload original file
+        uses: actions/upload-artifact@v4
+        with:
+          name: homebrew-golden-gate
+          path: packages.arm64_golden_gate.jws.json
+          if-no-files-found: error
+          retention-days: 7
